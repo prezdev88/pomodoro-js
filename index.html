@@ -3,13 +3,183 @@
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Document</title>
+        <title>Pomodoro</title>
     </head>
     <body>
-        <div id="clock">25:00</div>
-        <button id="startButton">Iniciar</button>
-        <div id="pomodoros">Pomodoro completado: 0</div>
-        <div id="totalPomodoros">Total: 0</div>
-        <script src="index.js"></script>
+        <div id="content" class="center">
+            <div id="clock" class="blueBorder">25:00</div>
+        
+            <div id="buttonDiv">
+                <button id="startButton">Iniciar</button>
+            </div>
+            
+            <div id="statistics">
+                <div id="pomodoros">Pomodoro completado: 0</div>
+                <div id="totalPomodoros">Total: 0</div>
+            </div>
+        </div>
+        
+        <script>
+            let clock = document.querySelector("#clock");
+            let startButton = document.querySelector("#startButton");
+            let pomodoros = document.querySelector("#pomodoros");
+            let totalPomodoros = document.querySelector("#totalPomodoros");
+            let pause = false;
+            let pomodoroCount = 0;
+            let totalPomodorosCount = 0;
+            const PAUSE_MILLIS = 1000;
+
+            window.addEventListener("load", () => {
+                startButton.addEventListener("click", async () => {
+                    if(isStartButton()){
+                        printPomodoros();
+                        setText(startButton, "Pausar");
+
+                        await startPomodoroClock(25);
+                
+                        pomodoroCount++;
+                        totalPomodorosCount++;
+                        printPomodoros();
+
+                        setText(startButton, "Iniciar Pausa");
+                    }else if(isPauseButton()){
+                        setBorderColor("blueBorder");
+                        setText(startButton, "Reanudar");
+                        pause = true;
+                    }else if(isResumeButton()){
+                        setBorderColor("redBorder");
+                        setText(startButton, "Pausar");
+                        pause = false;
+                    }else if(isStartPauseButton()){
+                        setText(startButton, "Pausar");
+
+                        if(pomodoroCount % 4 == 0){
+                            await startPomodoroClock(20);
+                            pomodoroCount = 0;
+                        }else{
+                            await startPomodoroClock(5);
+                        }
+
+                        setText(startButton, "Iniciar");
+                    }
+                });
+            });
+
+            function printPomodoros(){
+                pomodoros.innerHTML = "Pomodoro completado: " + pomodoroCount;
+                totalPomodoros.innerHTML = "Total: " + totalPomodorosCount;
+            }
+
+            async function startPomodoroClock(maxMinute){
+                setBorderColor("redBorder");
+                setClockText(maxMinute, 0);
+                await sleep(PAUSE_MILLIS);
+
+                maxMinute--;
+
+                for(let minute = maxMinute; minute >= 0 ; minute--){
+                    for(let second = 59; second >= 0; second--){
+                        setClockText(minute, second);
+                        await sleep(PAUSE_MILLIS);
+
+                        if(pause){
+                            second++;
+                        }
+                    }
+                }
+                setBorderColor("greenBorder");
+            }
+
+            function isStartPauseButton(){
+                return startButton.innerHTML == "Iniciar Pausa";
+            }
+
+            function isResumeButton(){
+                return startButton.innerHTML == "Reanudar";
+            }
+
+            function isPauseButton(){
+                return startButton.innerHTML == "Pausar";
+            }
+
+            function isStartButton(){
+                return startButton.innerHTML == "Iniciar";
+            }
+
+            function setEnable(component, enable){
+                if(enable){
+                    component.removeAttribute("disabled");
+                }else{
+                    component.setAttribute("disabled", "disabled");
+                }
+            }
+
+            function setText(component, text){
+                component.innerHTML = text;
+            }
+
+            function setClockText(minute, second){
+                clock.innerHTML = minute + ":" + (second < 9 ? "0"+second : second);
+            }
+
+            function sleep(microsecond) {
+                return new Promise(resolve => setTimeout(resolve, microsecond));
+            }
+
+            function setBorderColor(borderClass){
+                clock.setAttribute("class", borderClass);
+            }
+        </script>
+
+        <style>
+            body{
+                color: white;
+                background-color: #30363a;
+                font-family: Verdana, Geneva, Tahoma, sans-serif;
+            }
+
+            #clock{
+                font-size: 200px;
+                text-align: center;
+                border-style: dashed;
+                padding: 20px 70px 20px 70px;
+                margin-bottom: 20px;
+            }
+
+            #statistics{
+                text-align: center;
+            }
+
+            #buttonDiv{
+                text-align: center;
+                padding-bottom: 20px;
+            }
+
+            #startButton{
+                font-size: 40px;
+                padding: 10px 40px 10px 40px;
+            } 
+
+            .center {
+                margin: 0;
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                -ms-transform: translate(-50%, -50%);
+                transform: translate(-50%, -50%);
+            }
+
+            .greenBorder{
+                border-color: rgb(47, 116, 30);
+            }
+
+            .blueBorder{
+                border-color: rgb(16, 140, 189);
+            }
+
+            .redBorder{
+                border-color: rgb(185, 28, 28);
+            }
+        </style>
     </body>
 </html>
