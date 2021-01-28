@@ -27,7 +27,7 @@
             let pause = false;
             let pomodoroCount = 0;
             let totalPomodorosCount = 0;
-            const PAUSE_MILLIS = 1000;
+            const PAUSE_MILLIS = 1;
 
             window.addEventListener("load", () => {
                 startButton.addEventListener("click", async () => {
@@ -88,6 +88,7 @@
                     }
                 }
                 setBorderColor("greenBorder");
+                play("finished.wav");
             }
 
             function isStartPauseButton(){
@@ -119,7 +120,7 @@
             }
 
             function setClockText(minute, second){
-                clock.innerHTML = minute + ":" + (second < 9 ? "0"+second : second);
+                clock.innerHTML = minute + ":" + (second < 10 ? "0"+second : second);
             }
 
             function sleep(microsecond) {
@@ -128,6 +129,10 @@
 
             function setBorderColor(borderClass){
                 clock.setAttribute("class", borderClass);
+            }
+
+            function play(filePath){
+                new Audio(filePath).play();
             }
         </script>
 
@@ -142,9 +147,34 @@
                 font-size: 200px;
                 text-align: center;
                 border-style: dashed;
-                padding: 20px 70px 20px 70px;
+                width: 700px;
+                padding: 20px 0px 20px 0px;
                 margin-bottom: 20px;
+                transition: 0.5s;
             }
+
+            @media screen and (max-width: 800px){
+                #clock{
+                    font-size: 80px;
+                    transition: 0.5s;
+                    text-align: center;
+                    width: 230px;
+                }
+            }
+
+            @media screen and (max-width: 256px) and (min-width: 150px){
+                #clock{
+                    font-size: 35px;
+                    transition: 0.5s;
+                    text-align: center;
+                    width: 150px;
+                }
+            }
+
+            #startButton{
+                font-size: 20px;
+                padding: 10px 40px 10px 40px;
+            } 
 
             #statistics{
                 text-align: center;
@@ -154,11 +184,6 @@
                 text-align: center;
                 padding-bottom: 20px;
             }
-
-            #startButton{
-                font-size: 40px;
-                padding: 10px 40px 10px 40px;
-            } 
 
             .center {
                 margin: 0;
