@@ -13,12 +13,13 @@
         
             <div id="buttonDiv">
                 <button id="startButton">Iniciar</button>
-                <button id="jumpPauseButton" class="hide">Saltar Descanso</button>
+                <button id="jumpBreakButton" class="hide">Saltar Descanso</button>
             </div>
             
             <div id="statistics">
                 <div id="pomodoros">Pomodoro completado: 0</div>
-                <div id="totalPomodoros">Total: 0</div>
+                <div id="totalBreaks">Descansos: 0</div>
+                <div id="totalPomodoros">Total pomodoros: 0</div>
             </div>
         </div>
         
@@ -28,10 +29,12 @@
             let startButton = document.querySelector("#startButton");
             let pomodoros = document.querySelector("#pomodoros");
             let totalPomodoros = document.querySelector("#totalPomodoros");
-            let jumpPauseButton = document.querySelector("#jumpPauseButton");
+            let totalBreaks = document.querySelector("#totalBreaks");
+            let jumpBreakButton = document.querySelector("#jumpBreakButton");
             let pause = false;
             let pomodoroCount = 0;
             let totalPomodorosCount = 0;
+            let totalBreaksCount = 0;
             let on = false;
 
             const PAUSE_MILLIS = 1;
@@ -49,8 +52,9 @@
                         setText(startButton, "Pausar");
                         pause = false;
                         clock.style.color = "white";
-                    }else if(isStartPauseButton()){
-                        hide(jumpPauseButton);
+                    }else if(isStartBreakButton()){
+                        hide(jumpBreakButton);
+                        
                         setText(startButton, "Pausar");
 
                         if(pomodoroCount % 4 == 0){
@@ -60,12 +64,15 @@
                             await startPomodoroClock(5);
                         }
 
+                        totalBreaksCount++;
+                        print(totalBreaks, "Descansos: ", totalBreaksCount);
+
                         setText(startButton, "Iniciar");
                     }
                 });
 
-                jumpPauseButton.addEventListener("click", async () => {
-                    hide(jumpPauseButton);
+                jumpBreakButton.addEventListener("click", async () => {
+                    hide(jumpBreakButton);
                     await startPomodoro();
                 });
 
@@ -73,17 +80,17 @@
             });
 
             async function startPomodoro(){
-                printPomodoros();
+                printStatistics();
                 setText(startButton, "Pausar");
 
                 await startPomodoroClock(25);
         
                 pomodoroCount++;
                 totalPomodorosCount++;
-                printPomodoros();
+                printStatistics();
 
                 setText(startButton, "Iniciar Descanso");
-                show(jumpPauseButton);
+                show(jumpBreakButton);
             }
 
             function startPauseEffect(){
@@ -100,9 +107,13 @@
                 }, 250);
             }
 
-            function printPomodoros(){
-                pomodoros.innerHTML = "Pomodoro completado: " + pomodoroCount;
-                totalPomodoros.innerHTML = "Total: " + totalPomodorosCount;
+            function printStatistics(){
+                print(pomodoros, "Pomodoro completado: ", pomodoroCount);
+                print(totalPomodoros, "Total pomodoros: ", totalPomodorosCount);
+            }
+
+            function print(component, text, count){
+                component.innerHTML = text + count;
             }
 
             async function startPomodoroClock(maxMinute){
@@ -126,7 +137,7 @@
                 play("finished.wav");
             }
 
-            function isStartPauseButton(){
+            function isStartBreakButton(){
                 return startButton.innerHTML == "Iniciar Descanso";
             }
 
@@ -228,7 +239,7 @@
                 padding: 10px 40px 10px 40px;
             } 
 
-            #jumpPauseButton{
+            #jumpBreakButton{
                 font-size: 20px;
                 padding: 10px 40px 10px 40px;
             } 
