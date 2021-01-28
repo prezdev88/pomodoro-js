@@ -7,7 +7,9 @@
     </head>
     <body>
         <div id="content" class="center">
-            <div id="clock" class="blueBorder">25:00</div>
+            <div id="clockContainer" class="blueBorder">
+                <div id="clock">25:00</div>
+            </div>
         
             <div id="buttonDiv">
                 <button id="startButton">Iniciar</button>
@@ -21,13 +23,16 @@
         
         <script>
             let clock = document.querySelector("#clock");
+            let clockContainer = document.querySelector("#clockContainer");
             let startButton = document.querySelector("#startButton");
             let pomodoros = document.querySelector("#pomodoros");
             let totalPomodoros = document.querySelector("#totalPomodoros");
             let pause = false;
             let pomodoroCount = 0;
             let totalPomodorosCount = 0;
-            const PAUSE_MILLIS = 1;
+            let on = false;
+
+            const PAUSE_MILLIS = 1000;
 
             window.addEventListener("load", () => {
                 startButton.addEventListener("click", async () => {
@@ -50,6 +55,7 @@
                         setBorderColor("redBorder");
                         setText(startButton, "Pausar");
                         pause = false;
+                        clock.style.color = "white";
                     }else if(isStartPauseButton()){
                         setText(startButton, "Pausar");
 
@@ -63,7 +69,23 @@
                         setText(startButton, "Iniciar");
                     }
                 });
+
+                startPauseEffect();
             });
+
+            function startPauseEffect(){
+                setInterval(() => {
+                    if(pause){
+                        if(on){
+                            clock.style.color = "white";
+                            on = false;
+                        }else{
+                            clock.style.color = "#30363a";
+                            on = true;
+                        }
+                    }
+                }, 250);
+            }
 
             function printPomodoros(){
                 pomodoros.innerHTML = "Pomodoro completado: " + pomodoroCount;
@@ -120,7 +142,11 @@
             }
 
             function setClockText(minute, second){
-                clock.innerHTML = minute + ":" + (second < 10 ? "0"+second : second);
+                clock.innerHTML = formatNumber(minute) + ":" + formatNumber(second);
+            }
+
+            function formatNumber(number){
+                return (number < 10 ? "0" + number : number);
             }
 
             function sleep(microsecond) {
@@ -128,7 +154,7 @@
             }
 
             function setBorderColor(borderClass){
-                clock.setAttribute("class", borderClass);
+                clockContainer.setAttribute("class", borderClass);
             }
 
             function play(filePath){
@@ -146,28 +172,33 @@
             #clock{
                 font-size: 200px;
                 text-align: center;
-                border-style: dashed;
                 width: 700px;
                 padding: 20px 0px 20px 0px;
+                /*transition: 0.5s;*/
+            }
+
+            #clockContainer{
+                border-style: dashed;
                 margin-bottom: 20px;
-                transition: 0.5s;
             }
 
             @media screen and (max-width: 800px){
                 #clock{
                     font-size: 80px;
-                    transition: 0.5s;
+                    /*transition: 0.5s;*/
                     text-align: center;
                     width: 230px;
+                    padding: 20px 0px 20px 0px;
                 }
             }
 
-            @media screen and (max-width: 256px) and (min-width: 150px){
+            @media screen and (min-width: 150px) and (max-width: 256px){
                 #clock{
                     font-size: 35px;
-                    transition: 0.5s;
+                    /*transition: 0.5s;*/
                     text-align: center;
                     width: 150px;
+                    padding: 20px 0px 20px 0px;
                 }
             }
 
