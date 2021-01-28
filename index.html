@@ -3,7 +3,7 @@
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Pomodoro</title>
+        <title id="title">Pomodoro</title>
     </head>
     <body>
         <div id="content" class="center">
@@ -31,6 +31,7 @@
             let totalPomodoros = document.querySelector("#totalPomodoros");
             let totalBreaks = document.querySelector("#totalBreaks");
             let jumpBreakButton = document.querySelector("#jumpBreakButton");
+            let title = document.querySelector("#title");
             let pause = false;
             let pomodoroCount = 0;
             let totalPomodorosCount = 0;
@@ -166,7 +167,9 @@
             }
 
             function setClockText(minute, second){
-                clock.innerHTML = formatNumber(minute) + ":" + formatNumber(second);
+                let hour = formatNumber(minute) + ":" + formatNumber(second);
+                clock.innerHTML = hour;
+                title.innerHTML = hour;
             }
 
             function formatNumber(number){
