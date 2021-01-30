@@ -3,7 +3,7 @@
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title id="title">Pomodoro</title>
+        <title id="title">Pomodoro js</title>
     </head>
     <body>
         <div id="content" class="center">
@@ -149,8 +149,12 @@
                     notificationMessage = "Descanso finalizado";
                 }
 
-                const NOTIFICATION = new Notification('Pomodoro-js', {
-                    body: notificationMessage
+                showNotification("Pomodoro js", notificationMessage);
+            }
+
+            function showNotification(title, bodyMessage){
+                const NOTIFICATION = new Notification(title, {
+                    body: bodyMessage
                 });
 
                 NOTIFICATION.onclick = () => {

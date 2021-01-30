@@ -6,7 +6,8 @@ function createWindow () {
         height: 600,
         webPreferences: {
             nodeIntegration: true
-        }
+        },
+        icon: "./images/icon.png"
     });
 
     win.loadFile('index.html');
@@ -25,3 +26,24 @@ app.on('activate', () => {
         createWindow();
     }
 })
+
+// Menu
+const { Menu } = require('electron');
+
+const template = [
+    {
+        role: 'help',
+        submenu: [
+            {
+                label: 'Code on GitHub',
+                click: async () => {
+                    const { shell } = require('electron')
+                    await shell.openExternal('https://github.com/pperezp/pomodoro-js')
+                }
+            }
+        ]
+    }
+]
+
+const menu = Menu.buildFromTemplate(template)
+Menu.setApplicationMenu(menu);
