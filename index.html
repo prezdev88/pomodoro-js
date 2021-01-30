@@ -5,7 +5,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title id="title">Pomodoro js</title>
     </head>
-    <body>
+    <body>        
         <div id="content" class="center">
             <div id="clockContainer" class="blueBorder">
                 <div id="clock">25:00</div>
@@ -22,6 +22,30 @@
                 <div id="totalPomodoros">Total pomodoros: 0</div>
             </div>
         </div>
+
+        <script>
+            const { remote } = require('electron')
+            const { Menu, MenuItem } = remote
+            
+            const menu = new Menu()
+
+            //menu.append(new MenuItem({ type: 'separator' }))
+            menu.append(new MenuItem(
+                { 
+                    label: 'Test mode', 
+                    type: 'checkbox', 
+                    checked: false,
+                    click() {
+                        toggleTestMode();
+                    }
+                }
+            ));
+            
+            window.addEventListener('contextmenu', (e) => {
+              e.preventDefault()
+              menu.popup({ window: remote.getCurrentWindow() })
+            }, false)
+        </script>
         
         <script>
             let clock = document.querySelector("#clock");
@@ -37,8 +61,7 @@
             let totalPomodorosCount = 0;
             let totalBreaksCount = 0;
             let on = false;
-
-            const PAUSE_MILLIS = 1;
+            let pauseInMillis = 1000;
 
             window.addEventListener("load", () => {
                 startButton.addEventListener("click", async () => {
@@ -80,6 +103,14 @@
                 startPauseEffect();
             });
 
+            function toggleTestMode(){
+                if(pauseInMillis == 1000){
+                    pauseInMillis = 1;
+                }else{
+                    pauseInMillis = 1000;
+                }
+            }
+
             async function startPomodoro(){
                 printStatistics();
                 setText(startButton, "Pausar");
@@ -120,14 +151,14 @@
             async function startPomodoroClock(maxMinute){
                 setBorderColor("redBorder");
                 setClockText(maxMinute, 0);
-                await sleep(PAUSE_MILLIS);
+                await sleep(pauseInMillis);
 
                 maxMinute--;
 
                 for(let minute = maxMinute; minute >= 0 ; minute--){
                     for(let second = 59; second >= 0; second--){
                         setClockText(minute, second);
-                        await sleep(PAUSE_MILLIS);
+                        await sleep(pauseInMillis);
 
                         if(pause){
                             second++;
@@ -233,7 +264,7 @@
                 text-align: center;
                 width: 700px;
                 padding: 20px 0px 20px 0px;
-                /*transition: 0.5s;*/
+                transition: 0.5s;
             }
 
             #clockContainer{
@@ -241,10 +272,10 @@
                 margin-bottom: 20px;
             }
 
-            @media screen and (max-width: 800px){
+            @media screen and (max-width: 720px){
                 #clock{
                     font-size: 80px;
-                    /*transition: 0.5s;*/
+                    transition: 0.5s;
                     text-align: center;
                     width: 230px;
                     padding: 20px 0px 20px 0px;
@@ -254,7 +285,7 @@
             @media screen and (min-width: 150px) and (max-width: 256px){
                 #clock{
                     font-size: 35px;
-                    /*transition: 0.5s;*/
+                    transition: 0.5s;
                     text-align: center;
                     width: 150px;
                     padding: 20px 0px 20px 0px;

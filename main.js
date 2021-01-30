@@ -7,7 +7,11 @@ function createWindow () {
         webPreferences: {
             nodeIntegration: true
         },
-        icon: "./images/icon.png"
+        icon: "./images/icon.png",
+        webPreferences:{
+            enableRemoteModule: true,
+            nodeIntegration: true
+        }
     });
 
     win.loadFile('index.html');
