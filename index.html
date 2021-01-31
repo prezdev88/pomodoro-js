@@ -12,8 +12,8 @@
             </div>
         
             <div id="buttonDiv">
-                <button id="startButton">Iniciar</button>
-                <button id="jumpBreakButton" class="hide">Saltar Descanso</button>
+                <button id="startButton" class="btn">Iniciar</button>
+                <button id="jumpBreakButton" class="btn hide">Saltar Descanso</button>
             </div>
             
             <div id="statistics">
@@ -64,22 +64,29 @@
             let pauseInMillis = 1000;
 
             window.addEventListener("load", () => {
+                setBackgroundColor(startButton, "mediumseagreen");
+                setBackgroundColor(jumpBreakButton, "rgb(185, 28, 28)");
                 startButton.addEventListener("click", async () => {
                     if(isStartButton()){
+                        setBackgroundColor(startButton, "goldenrod");
                         await startPomodoro();
+                        setBackgroundColor(startButton, "mediumseagreen");
                     }else if(isPauseButton()){
                         setBorderColor("blueBorder");
                         setText(startButton, "Reanudar");
+                        setBackgroundColor(startButton, "mediumseagreen");
                         pause = true;
                     }else if(isResumeButton()){
                         setBorderColor("redBorder");
                         setText(startButton, "Pausar");
+                        setBackgroundColor(startButton, "goldenrod");
                         pause = false;
                         clock.style.color = "white";
                     }else if(isStartBreakButton()){
                         hide(jumpBreakButton);
                         
                         setText(startButton, "Pausar");
+                        setBackgroundColor(startButton, "goldenrod");
 
                         if(pomodoroCount % 4 == 0){
                             await startPomodoroClock(20);
@@ -88,6 +95,7 @@
                             await startPomodoroClock(5);
                         }
 
+                        setBackgroundColor(startButton, "mediumseagreen");
                         totalBreaksCount++;
                         print(totalBreaks, "Descansos: ", totalBreaksCount);
 
@@ -97,6 +105,7 @@
 
                 jumpBreakButton.addEventListener("click", async () => {
                     hide(jumpBreakButton);
+                    setBackgroundColor(startButton, "goldenrod");
                     await startPomodoro();
                 });
 
@@ -132,7 +141,7 @@
                             clock.style.color = "white";
                             on = false;
                         }else{
-                            clock.style.color = "#30363a";
+                            clock.style.color = "#30sur363a";
                             on = true;
                         }
                     }
@@ -169,10 +178,10 @@
                 play("finished.wav");
 
 
-                showNotification(maxMinute);
+                initNotification(maxMinute);
             }
 
-            function showNotification(minutes){
+            function initNotification(minutes){
                 let notificationMessage;
                 if(minutes == 24){
                     notificationMessage = "Pomodoro finalizado";
@@ -244,11 +253,15 @@
             }
 
             function hide(component){
-                component.setAttribute("class", "hide");
+                component.classList.add("hide");
             }
 
             function show(component){
-                component.removeAttribute("class");
+                component.classList.remove("hide");
+            }
+
+            function setBackgroundColor(component, color){
+                component.style.backgroundColor = color;
             }
         </script>
 
@@ -334,6 +347,12 @@
 
             .hide{
                 display: none;
+            }
+
+            .btn{
+                color: white;
+                border: 0px;
+                border-radius: 5px;
             }
         </style>
     </body>
